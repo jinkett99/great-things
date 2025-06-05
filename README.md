@@ -17,8 +17,8 @@ Follow these steps in the specified order to run the scripts successfully:
 
 ### **1. Clone the Repository**  
 ```bash
-git clone https://github.com/jinkett99/good-things.git
-cd good-things
+git clone https://github.com/jinkett99/great-things.git
+cd great-things
 ```
 
 ### **2. Install Dependencies**  
@@ -26,3 +26,23 @@ cd good-things
 pip install -r requirements.txt
 ```
 
+---
+
+## **Notebooks**
+```
+RAG-webscraper/
+notebooks/
+├── 0.01-jk-experiments.ipynb           # Write runnable .python files for streamlit, play with various aspects of RAG chain (Index, Document retrieval, Query engine)
+```
+
+```
+RAG-evaluation/
+notebooks/
+├── 0.01-jk-evaluation_pipeline.ipynb   # Build a custom RAG system (query engine) with LlamaIndex, run evaluation scripts
+├── 0.01-jk-query_rewriting.ipynb       # Implementation and experimentation of HyDE and Sub Question Query Engines (Document retrieval methodologies) + Evaluation
+```
+
+---
+
+## **Contributing**  
+Feel free to open issues and submit pull requests. Contributions are welcome!
