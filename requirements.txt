@@ -1,0 +1,12 @@
+streamlit
+langchain
+langchain-chroma
+langchain-community
+langchain-core
+langchain-ollama
+langchain-huggingface
+sentence-transformers
+InstructorEmbedding
+selenium
+unstructured
+nltk
