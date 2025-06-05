@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 ---
 
-## **Notebooks**
+## **Content**
 ```
 RAG-webscraper/
 notebooks/
@@ -39,6 +39,12 @@ notebooks/
 RAG-evaluation/
 notebooks/
 ├── 0.01-jk-evaluation_pipeline.ipynb   # Build a custom RAG system (query engine) with LlamaIndex, run evaluation scripts
+├── 0.01-jk-query_rewriting.ipynb       # Implementation and experimentation of HyDE and Sub Question Query Engines (Document retrieval methodologies) + Evaluation
+```
+
+```
+main/
+├── app.py                              # Spins up ChainLit frontend at http://localhost:8000, run command "chainlit run app.py -w"
 ├── 0.01-jk-query_rewriting.ipynb       # Implementation and experimentation of HyDE and Sub Question Query Engines (Document retrieval methodologies) + Evaluation
 ```
 
