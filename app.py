@@ -16,6 +16,7 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core.query_engine.retriever_query_engine import RetrieverQueryEngine
 from llama_index.core.callbacks import CallbackManager
 from llama_index.core.service_context import ServiceContext
+from llama_index.core.memory import ChatMemoryBuffer
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -30,6 +31,7 @@ except:
     index = VectorStoreIndex.from_documents(documents)
     index.storage_context.persist()
 
+# Called when new chat session is created
 @cl.on_chat_start
 async def start():
     Settings.llm = OpenAI(
@@ -40,11 +42,12 @@ async def start():
 
     Settings.callback_manager = CallbackManager([cl.LlamaIndexCallbackHandler()])
     service_context = Settings.callback_manager
-    
-    query_engine = index.as_query_engine(
-        streaming=True, similarity_top_k=2, service_context=service_context
+
+    # how to incorporate memory to query engine? Use CHAT ENGINE instead of query engine!
+    chat_engine = index.as_chat_engine(
+        streaming=True, similarity_top_k=6, service_context=service_context
     )
-    cl.user_session.set("query_engine", query_engine)
+    cl.user_session.set("chat_engine", chat_engine)
 
     await cl.Message(
         author="Assistant", content="Hello! Im an AI assistant. How may I help you?"
@@ -53,11 +56,11 @@ async def start():
 
 @cl.on_message
 async def main(message: cl.Message):
-    query_engine = cl.user_session.get("query_engine")  # type: RetrieverQueryEngine
+    chat_engine = cl.user_session.get("chat_engine")
 
     msg = cl.Message(content="", author="Assistant")
 
-    res = await cl.make_async(query_engine.query)(message.content)
+    res = await cl.make_async(chat_engine.stream_chat)(message.content)
 
     for token in res.response_gen:
         await msg.stream_token(token)
