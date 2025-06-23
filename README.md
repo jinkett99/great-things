@@ -46,6 +46,7 @@ notebooks/
 ├── 0.01-jk-query_rewriting.ipynb       # Implementation and experimentation of HyDE and Sub Question Query Engines (Document retrieval methodologies) + Evaluation
 ```
 
+```
 RAG-webapp/
 notebooks/
 ├── 0.01-jk-experiments.ipynb           # General experimentation - Chainlit workflows, Hybrid Reciprocal Rerank Retriever and Guardrail implementation
