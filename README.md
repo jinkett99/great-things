@@ -6,6 +6,10 @@ The following use-cases have been identified (as of now):
 2. LlamaIndex orchestrated RAG systems deployed with ChainLit frontend.
 3. Evaluation pipeline for baseline RAG system with LlamaIndex.
 4. Evaluation of document retrieval methodologies (HyDE and sub-question query decomposition).
+5. Improving Retrieval with Hybrid Reciprocal Rerank Retriever (BM25 + Index Retriever).
+6. Building on ChainLit workflows (Chat Resume + Guardrails).
+7. [Future work] Chainlit functions and tools (web-search capabilities).
+8. [Future work] Explore LT-memory for better contextual awareness.
 
 ![Image](images/rag_abstraction.png)
 
@@ -42,9 +46,15 @@ notebooks/
 ├── 0.01-jk-query_rewriting.ipynb       # Implementation and experimentation of HyDE and Sub Question Query Engines (Document retrieval methodologies) + Evaluation
 ```
 
+RAG-webapp/
+notebooks/
+├── 0.01-jk-experiments.ipynb           # General experimentation - Chainlit workflows, Hybrid Reciprocal Rerank Retriever and Guardrail implementation
+├── appv2.py                            # Spins up *revised ChainLit frontend at http://localhost:8000, run command "chainlit run app.py -w"
+```
+
 ```
 main/
-├── app.py                              # Spins up ChainLit frontend at http://localhost:8000, run command "chainlit run app.py -w"
+├── app.py                              # Spins up basic ChainLit frontend at http://localhost:8000, run command "chainlit run app.py -w"
 ```
 
 ---
