@@ -192,7 +192,7 @@ async def on_chat_resume(thread: ThreadDict):
                     content=message['output']
                 )
             )
-    # set memory for user session - good practice for async deployment
+    # set memory for user session - good practice for async deployment.
     cl.user_session.set("memory", memory)
 
     # define service context (with Callback handler)
