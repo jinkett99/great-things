@@ -103,7 +103,7 @@ async def main(message: cl.Message):
 
         # Check if the moderator response for input is safe
         if moderator_response_for_input == "safe":
-            response = chat_engine.stream_chat(query, chat_history=chat_history)
+            response = chat_engine.stream_chat(message.content, chat_history=chat_history)
 
             # Moderate the LLM output
             moderator_response_for_output = Settings.gllm.complete(str(response)).text
@@ -137,7 +137,7 @@ async def main(message: cl.Message):
     memory.put(
         ChatMessage(
             role = MessageRole.ASSISTANT,
-            content = str(response)
+            content = str(res)
         )
     )
     cl.user_session.set("memory", memory)
@@ -174,7 +174,7 @@ async def set_starters():
 async def on_chat_resume(thread: ThreadDict):
     """Handler function to resume a chat"""
     
-    ## Restore memory buffer
+    # Restore memory buffer
     memory = ChatMemoryBuffer.from_defaults()
     root_messages = [m for m in thread["steps"]]
     for message in root_messages:
@@ -192,7 +192,7 @@ async def on_chat_resume(thread: ThreadDict):
                     content=message['output']
                 )
             )
-    # set memory for user session - good practice for async deployment.
+    # set memory for user session - good practice for async deployment
     cl.user_session.set("memory", memory)
 
     # define service context (with Callback handler)

@@ -35,7 +35,7 @@ try:
     # load index
     index = load_index_from_storage(storage_context)
 except:
-    documents = SimpleDirectoryReader("RAG-webscraper/docs").load_data(show_progress=True)
+    documents = SimpleDirectoryReader("RAG-webapp/docs").load_data(show_progress=True)
     index = VectorStoreIndex.from_documents(documents)
     index.storage_context.persist()
 
@@ -78,11 +78,14 @@ async def start():
 @cl.on_message
 async def main(message: cl.Message):
     '''On message handler to handle message received events.'''
-    chat_engine = cl.user_session.get("chat_engine")
 
+    # get session variables
+    memory = cl.user_session.get("memory")
+    chat_history = memory.get()
+    chat_engine = cl.user_session.get("chat_engine")
     msg = cl.Message(content="", author="Assistant")
 
-    res = await cl.make_async(chat_engine.stream_chat)(message.content)
+    res = await cl.make_async(chat_engine.stream_chat)(message.content, chat_history=chat_history)
 
     for token in res.response_gen:
         await msg.stream_token(token)
@@ -116,9 +119,9 @@ async def set_starters():
 
 @cl.on_chat_resume
 async def on_chat_resume(thread: ThreadDict):
-    """Handler function to resume a chat"""
+    """Handler function to resume chat(s)"""
     
-    ## Restore memory buffer
+    # Restore memory buffer
     memory = ChatMemoryBuffer.from_defaults()
     root_messages = [m for m in thread["steps"]]
     for message in root_messages:
@@ -136,36 +139,16 @@ async def on_chat_resume(thread: ThreadDict):
                     content=message['output']
                 )
             )
-    # Define chat history in correct format
-    chat_history = memory.get()
+    # set memory for user session - good practice for async deployment
+    cl.user_session.set("memory", memory)
 
-    # Redefine a (low-level abstraction) chat engine to include chat history
-    custom_prompt = PromptTemplate(
-    """\
-    Given a conversation (between Human and Assistant) and a follow up message from Human, \
-    rewrite the message to be a standalone question that captures all relevant context \
-    from the conversation.
+    # define service context (with Callback handler)
+    service_context = Settings.callback_manager
 
-    <Chat History>
-    {chat_history}
+    # define chat engine
+    chat_engine = index.as_chat_engine(chat_mode="condense_question", llm=Settings.llm, streaming=True, verbose=True, service_context=service_context)
 
-    <Follow Up Message>
-    {question}
-
-    <Standalone question>
-    """
-    )
-
-    # Restore chat engine
-    query_engine = index.as_query_engine()
-    chat_engine = CondenseQuestionChatEngine.from_defaults(
-        query_engine=query_engine,
-        condense_question_prompt=custom_prompt,
-        chat_history=chat_history,
-        verbose=True,
-    )
-
-    # Redefine chat engine
+    # Set chat_engine for user session
     cl.user_session.set("chat_engine", chat_engine)
 
     # Output user info
